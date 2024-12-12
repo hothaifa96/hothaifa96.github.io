@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>מעריך הצעת מחיר</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+    </script>
+</head>
+
+<body dir="rtl">
+    <div id="content">
+        <header>
+
+            <div class="business-details">
+                <div class="logo">
+                    <img src="./omar.png" alt="Logo">
+                </div>
+                <h2>מרפאת שיניים עומר עומרי</h2>
+                <p>כתובת: החשמל 8,עפולה</p>
+                <p>טלפון: 0528799309</p>
+                <p>תאריך: <span id="date"></span></p>
+            </div>
+
+
+        </header>
+        <div class="customer" dir="rtl">
+            <h2> - עבור</h2>
+            <input id="name" />
+            <label for="add">כתובת</label><input id="add" />
+            <label for="tel">טלפון</label><input id="tel" type="tel" />
+        </div>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th>מוצר</th>
+                        <th>מחיר</th>
+                        <th>פעולות</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table">
+                    <tr>
+                        <td><input type="text" placeholder="מוצר"></td>
+                        <td><input type="number" placeholder="מחיר"></td>
+                        <td><button class="delete-row">מחק</button></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">סכום כולל:</td>
+                        <td id="total-price">0</td>
+                    </tr>
+                </tfoot>
+            </table>
+    </div>
+    <button id="add-row">הוסף מוצר</button>
+    <button id="calc">חישוב</button>
+    <button id="export-pdf">ייצוא ל-PDF</button>
+    <button id="e" onclick="printPage()">Print Page</button>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+<script>
+    function printPage() {
+        window.print();
+    }
+    document.getElementById('export-pdf').addEventListener('click', (event) => {
+        const deleteButtons = document.querySelectorAll('.delete-row');
+        deleteButtons.forEach(button => {
+            button.style.display = 'none';
+        });
+        const element = document.getElementById('content');
+        const documentWidth = window.innerWidth / 96; // Convert pixels to inches
+        const documentHeight = 11;
+        const options = {
+            margin: 2,
+            filename: 'quotation.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 3 },
+            jsPDF: { unit: 'in', format: [documentWidth, documentHeight], orientation: 'portrait' }
+        };
+
+
+        // Promise-based usage:
+        html2pdf().set(options).from(element).save();
+
+
+        // Old monolithic-style usage:
+        // html2pdf(element, options);
+
+    });
+</script>
+<script>
+    const today = new Date();
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = today.toLocaleDateString('en-GB', options);
+
+    document.getElementById('date').textContent = formattedDate;
+</script>
+
+</html>
